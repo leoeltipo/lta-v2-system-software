@@ -162,31 +162,31 @@ void smart_buffer_init(smart_buffer_group_status_t *smart_buffer)
 	smart_buffer->reset.reg_mask 				= SMART_BUFFER_RESET_REG_MASK;
 	strcpy(smart_buffer->reset.name,"bufReset");
 
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->cha_sel.reg_offset, 		smart_buffer->cha_sel.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->chb_sel.reg_offset, 		smart_buffer->chb_sel.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->chc_sel.reg_offset, 		smart_buffer->chc_sel.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->chd_sel.reg_offset, 		smart_buffer->chd_sel.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->cha_nsamp.reg_offset, 		smart_buffer->cha_nsamp.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->chb_nsamp.reg_offset, 		smart_buffer->chb_nsamp.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->chc_nsamp.reg_offset, 		smart_buffer->chc_nsamp.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->chd_nsamp.reg_offset, 		smart_buffer->chd_nsamp.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->ch_mode.reg_offset, 		smart_buffer->ch_mode.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->dataa_mode.reg_offset, 	smart_buffer->dataa_mode.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->datab_mode.reg_offset, 	smart_buffer->datab_mode.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->datac_mode.reg_offset,		smart_buffer->datac_mode.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->datad_mode.reg_offset, 	smart_buffer->datad_mode.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->capture_mode.reg_offset, 	smart_buffer->capture_mode.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->capture_en_src.reg_offset, smart_buffer->capture_en_src.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->capture_start.reg_offset, 	smart_buffer->capture_start.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->speed_ctrl.reg_offset, 	smart_buffer->speed_ctrl.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->transfer_start.reg_offset, smart_buffer->transfer_start.value);
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->reset.reg_offset, 			smart_buffer->reset.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->cha_sel.reg_offset, 		smart_buffer->cha_sel.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->chb_sel.reg_offset, 		smart_buffer->chb_sel.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->chc_sel.reg_offset, 		smart_buffer->chc_sel.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->chd_sel.reg_offset, 		smart_buffer->chd_sel.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->cha_nsamp.reg_offset, 		smart_buffer->cha_nsamp.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->chb_nsamp.reg_offset, 		smart_buffer->chb_nsamp.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->chc_nsamp.reg_offset, 		smart_buffer->chc_nsamp.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->chd_nsamp.reg_offset, 		smart_buffer->chd_nsamp.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->ch_mode.reg_offset, 		smart_buffer->ch_mode.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->dataa_mode.reg_offset, 	smart_buffer->dataa_mode.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->datab_mode.reg_offset, 	smart_buffer->datab_mode.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->datac_mode.reg_offset,		smart_buffer->datac_mode.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->datad_mode.reg_offset, 	smart_buffer->datad_mode.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->capture_mode.reg_offset, 	smart_buffer->capture_mode.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->capture_en_src.reg_offset, smart_buffer->capture_en_src.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->capture_start.reg_offset, 	smart_buffer->capture_start.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->speed_ctrl.reg_offset, 	smart_buffer->speed_ctrl.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->transfer_start.reg_offset, smart_buffer->transfer_start.value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->reset.reg_offset, 			smart_buffer->reset.value);
 
 	// Read actual value of capture_end and transfer_end registers.
 	volatile uint32_t value;
-	value = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->capture_end.reg_offset);
+	value = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->capture_end.reg_offset);
 	smart_buffer->capture_end.value = (uint16_t)value;
-	value = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->transfer_end.reg_offset);
+	value = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->transfer_end.reg_offset);
 	smart_buffer->transfer_end.value = (uint16_t)value;
 
 }
@@ -200,21 +200,21 @@ int smart_buffer_change_status(smart_buffer_status_t *reg, uint16_t value)
 		return -1;
 	}
 
-	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, reg->reg_offset,(uint32_t) reg->value);
+	SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, reg->reg_offset,(uint32_t) reg->value);
 
 	return 0;
 }
 
 int smart_buffer_eoc(smart_buffer_group_status_t *smart_buffer)
 {
-	volatile uint32_t end = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->capture_end.reg_offset);
+	volatile uint32_t end = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->capture_end.reg_offset);
 
 	// Check if the capture has finished.
 	if(end)
 	{
 		// If it finished, STOP capture unit.
 		smart_buffer->capture_start.value = SMART_BUFFER_CAPTURE_STOP;
-		SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->capture_start.reg_offset, smart_buffer->capture_start.value);
+		SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->capture_start.reg_offset, smart_buffer->capture_start.value);
 		return 1;
 	}
 	else
@@ -226,14 +226,14 @@ int smart_buffer_eoc(smart_buffer_group_status_t *smart_buffer)
 
 int smart_buffer_eot(smart_buffer_group_status_t *smart_buffer)
 {
-	volatile uint32_t end = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->transfer_end.reg_offset);
+	volatile uint32_t end = SMART_BUFFER_mReadReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->transfer_end.reg_offset);
 
 	// Check if the transfer has finished.
 	if(end)
 	{
 		// If it finished, STOP transfer unit.
 		smart_buffer->transfer_start.value = SMART_BUFFER_TRNASFER_STOP;
-		SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_BASEADDR, smart_buffer->transfer_start.reg_offset, smart_buffer->transfer_start.value);
+		SMART_BUFFER_mWriteReg(XPAR_SMART_BUFFER_0_BASEADDR, smart_buffer->transfer_start.reg_offset, smart_buffer->transfer_start.value);
 		return 1;
 	}
 	else

@@ -59,7 +59,7 @@ int main()
    packer_init(&(sys.packer_sw));
 
    mprint("--- Initialize ADC 15 MHz controller ---\r\n");
-   adc_init(XPAR_GPIO_ADC_DEVICE_ID, &(sys.gpio_adc));
+   //adc_init(XPAR_GPIO_ADC_DEVICE_ID, &(sys.gpio_adc));
 
    mprint("--- Initialize CDS core ---\r\n");
    cds_core_init(&(sys.cds));
