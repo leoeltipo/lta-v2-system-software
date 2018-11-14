@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "io_func.h"
-#include "eth.h"
+//#include "eth.h"
 
 system_state_t *io_sys;
 
@@ -22,9 +22,9 @@ void io_init(system_state_t *sys)
 void io_sprintf(char *str, char *fmt, ...)
 {
 	// Output string.
-	char outbuf[100];
+	char outbuf[IO_SPRINTF_BUFFER_LENGTH];
 
-	for (int i=0; i<100; i++)
+	for (int i=0; i<IO_SPRINTF_BUFFER_LENGTH; i++)
 	{
 		outbuf[i] = '\0';
 	}
@@ -133,9 +133,9 @@ void io_sprintf(char *str, char *fmt, ...)
 void io_int2str(int32_t n, char *str)
 {
 	// Output buffer.
-	char outbuf[12];
+	char outbuf[IO_INT2STR_BUFFER_LENGTH];
 
-	for (int i=0; i<12; i++)
+	for (int i=0; i<IO_INT2STR_BUFFER_LENGTH; i++)
 	{
 		outbuf[i] = '\0';
 	}
@@ -181,9 +181,9 @@ void io_int2str(int32_t n, char *str)
 void io_uint2str(uint32_t n, char *str)
 {
 	// Output buffer.
-	char outbuf[12];
+	char outbuf[IO_UINT2STR_BUFFER_LENGTH];
 
-	for (int i=0; i<12; i++)
+	for (int i=0; i<IO_UINT2STR_BUFFER_LENGTH; i++)
 	{
 		outbuf[i] = '\0';
 	}
@@ -214,10 +214,10 @@ void io_uint2str(uint32_t n, char *str)
 void io_float2str(float n, char *str)
 {
 	// Output buffer.
-	char outbuf[10];
-	char outbuf_dp[10];
+	char outbuf[IO_FLOAT2STR_BUFFER_LENGTH];
+	char outbuf_dp[IO_FLOAT2STR_BUFFER_LENGTH];
 
-	for (int i=0; i<10; i++)
+	for (int i=0; i<IO_FLOAT2STR_BUFFER_LENGTH; i++)
 	{
 		outbuf[i] = '\0';
 		outbuf_dp[i] = '\0';

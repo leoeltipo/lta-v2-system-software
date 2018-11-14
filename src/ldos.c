@@ -1,6 +1,6 @@
 /*******************************************************************************
-* @file ad5293.c
-* @brief Implementation of AD5293 Driver.
+* @file LDOS.c
+* @brief Implementation of LDOS Driver.
 * @author Leandro Stefanazzi (lstefanazzi@uns.edu.ar)
 ********************************************************************************/
 
@@ -12,8 +12,7 @@
 #include <xspi.h>
 #include <xgpio.h>
 #include "interrupt.h"
-#include "defines.h"
-#include "ad5293.h"
+#include "ldos.h"
 #include "io_func.h"
 
 /******************************************************************************/
@@ -30,9 +29,9 @@ XGpio gpio_ldo_i;
 gpio_ldo_bits_state_t gpio_ldo_bits_state;
 
 /*******************
-* @brief ad5293_init
+* @brief LDOS_init
 ********************/
-int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gpio_device_id)
+int ldos_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gpio_device_id)
 {
 	int ret;
 	uint32_t base_addr		= 0;
@@ -109,11 +108,11 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 
 	tdelay_s(1);
 
-	// Set AD5293 to allow modifying digpot values.
-	ad5293_creg_wr(1, 0, SPI_LDO_VDRAIN_SLAVE_SELECT);
-	ad5293_creg_wr(1, 0, SPI_LDO_VDD_SLAVE_SELECT);
-	ad5293_creg_wr(1, 0, SPI_LDO_VR_SLAVE_SELECT);
-	ad5293_creg_wr(1, 0, SPI_LDO_VSUB_SLAVE_SELECT);
+	// Set LDOS to allow modifying digpot values.
+	ldos_creg_wr(1, 0, SPI_LDO_VDRAIN_SLAVE_SELECT);
+	ldos_creg_wr(1, 0, SPI_LDO_VDD_SLAVE_SELECT);
+	ldos_creg_wr(1, 0, SPI_LDO_VR_SLAVE_SELECT);
+	ldos_creg_wr(1, 0, SPI_LDO_VSUB_SLAVE_SELECT);
 
 	/*
 	 * VDRAIN:
@@ -127,13 +126,13 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 	 */
 	biases->vdrain.value = -22;
 	biases->vdrain.reg = SPI_LDO_VDRAIN_SLAVE_SELECT;
-	biases->vdrain.vmin = AD5293_VDRAIN_VMIN;
-	biases->vdrain.vmax = AD5293_VDRAIN_VMAX;
-	biases->vdrain.vref = AD5293_VDRAIN_VREF;
-	biases->vdrain.r1 = AD5293_VDRAIN_R1;
-	biases->vdrain.r2p = AD5293_VDRAIN_R2P;
-	biases->vdrain.bits = AD5293_VDRAIN_BITS;
-	biases->vdrain.rm = (float)AD5293_VDRAIN_RFS/(float)(1 << biases->vdrain.bits);
+	biases->vdrain.vmin = LDOS_VDRAIN_VMIN;
+	biases->vdrain.vmax = LDOS_VDRAIN_VMAX;
+	biases->vdrain.vref = LDOS_VDRAIN_VREF;
+	biases->vdrain.r1 = LDOS_VDRAIN_R1;
+	biases->vdrain.r2p = LDOS_VDRAIN_R2P;
+	biases->vdrain.bits = LDOS_VDRAIN_BITS;
+	biases->vdrain.rm = (float)LDOS_VDRAIN_RFS/(float)(1 << biases->vdrain.bits);
 	strcpy(biases->vdrain.name,"vdrain");
 
 	//VDD initial values
@@ -149,13 +148,13 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 	*/
 	biases->vdd.value = -22;
 	biases->vdd.reg = SPI_LDO_VDD_SLAVE_SELECT;
-	biases->vdd.vmin = AD5293_VDD_VMIN;
-	biases->vdd.vmax = AD5293_VDD_VMAX;
-	biases->vdd.vref = AD5293_VDD_VREF;
-	biases->vdd.r1 = AD5293_VDD_R1;
-	biases->vdd.r2p = AD5293_VDD_R2P;
-	biases->vdd.bits = AD5293_VDD_BITS;
-	biases->vdd.rm =  (float)AD5293_VDD_RFS/(float)(1 << biases->vdd.bits);
+	biases->vdd.vmin = LDOS_VDD_VMIN;
+	biases->vdd.vmax = LDOS_VDD_VMAX;
+	biases->vdd.vref = LDOS_VDD_VREF;
+	biases->vdd.r1 = LDOS_VDD_R1;
+	biases->vdd.r2p = LDOS_VDD_R2P;
+	biases->vdd.bits = LDOS_VDD_BITS;
+	biases->vdd.rm =  (float)LDOS_VDD_RFS/(float)(1 << biases->vdd.bits);
 	strcpy(biases->vdd.name,"vdd");
 
 	//set VR initial values
@@ -171,13 +170,13 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 	 */
 	biases->vr.value = -13;
 	biases->vr.reg = SPI_LDO_VR_SLAVE_SELECT;
-	biases->vr.vmin = AD5293_VR_VMIN;
-	biases->vr.vmax = AD5293_VR_VMAX;
-	biases->vr.vref = AD5293_VR_VREF;
-	biases->vr.r1 = AD5293_VR_R1;
-	biases->vr.r2p = AD5293_VR_R2P;
-	biases->vr.bits = AD5293_VR_BITS;
-	biases->vr.rm =  (float)AD5293_VR_RFS/(float)(1 << biases->vr.bits);
+	biases->vr.vmin = LDOS_VR_VMIN;
+	biases->vr.vmax = LDOS_VR_VMAX;
+	biases->vr.vref = LDOS_VR_VREF;
+	biases->vr.r1 = LDOS_VR_R1;
+	biases->vr.r2p = LDOS_VR_R2P;
+	biases->vr.bits = LDOS_VR_BITS;
+	biases->vr.rm =  (float)LDOS_VR_RFS/(float)(1 << biases->vr.bits);
 	strcpy(biases->vr.name, "vr");
 
 
@@ -195,13 +194,13 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 	 */
 	biases->vsub.value = 40;
 	biases->vsub.reg = SPI_LDO_VSUB_SLAVE_SELECT;
-	biases->vsub.vmin = AD5293_VSUB_VMIN;
-	biases->vsub.vmax = AD5293_VSUB_VMAX;
-	biases->vsub.vref = AD5293_VSUB_VREF;
-	biases->vsub.r1 = AD5293_VSUB_R1;
-	biases->vsub.r2p = AD5293_VSUB_R2P;
-	biases->vsub.bits = AD5293_VSUB_BITS;
-	biases->vsub.rm = (float)AD5293_VSUB_RFS/(float)(1 << biases->vsub.bits);
+	biases->vsub.vmin = LDOS_VSUB_VMIN;
+	biases->vsub.vmax = LDOS_VSUB_VMAX;
+	biases->vsub.vref = LDOS_VSUB_VREF;
+	biases->vsub.r1 = LDOS_VSUB_R1;
+	biases->vsub.r2p = LDOS_VSUB_R2P;
+	biases->vsub.bits = LDOS_VSUB_BITS;
+	biases->vsub.rm = (float)LDOS_VSUB_RFS/(float)(1 << biases->vsub.bits);
 	strcpy(biases->vsub.name, "vsub");
 
 	//set default values to hardware
@@ -210,7 +209,7 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 	int nBiases = sizeof(bias_group_status_t)/sizeof(bias_status_t);
 	for(int i = 0; i < nBiases; i++)
 	{
-		status = ad5293_set_voltage(bias, bias->value);
+		status = ldos_set_voltage(bias, bias->value);
 	 	if (status != XST_SUCCESS)
 	 	{
 	 		char str[50];
@@ -221,18 +220,18 @@ int ad5293_init(bias_group_status_t *biases, uint32_t spi_device_id, uint32_t gp
 	 }
 
 	// Enable LDOs.
-	ad5293_sw_en(GPIO_LDO_VDRAIN, 1);
-   	ad5293_sw_en(GPIO_LDO_VDD, 1);
-   	ad5293_sw_en(GPIO_LDO_VR, 1);
-   	ad5293_sw_en(GPIO_LDO_VSUB, 1);
+	ldos_sw_en(GPIO_LDO_VDRAIN, 1);
+   	ldos_sw_en(GPIO_LDO_VDD, 1);
+   	ldos_sw_en(GPIO_LDO_VR, 1);
+   	ldos_sw_en(GPIO_LDO_VSUB, 1);
 
 	return ret;
 }
 
 /********************** 
-* @brief ad5293_rdac_wr 
+* @brief LDOS_rdac_wr
 ***********************/
-int ad5293_rdac_wr(uint16_t data,uint32_t ss)
+int ldos_rdac_wr(uint16_t data,uint32_t ss)
 {
 	int ret;
 	uint8_t buf[2];
@@ -241,10 +240,10 @@ int ad5293_rdac_wr(uint16_t data,uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | D9 | D8 | D7 | D6 | D5 | D4 | D3 | D2 | D1 | D0 ||
-	buf[0] = AD5293_CMD_RDAC_WRITE
-		   | ( (data & AD5293_DATA_HIGH_MASK) >> 8 );
+	buf[0] = LDOS_CMD_RDAC_WRITE
+		   | ( (data & LDOS_DATA_HIGH_MASK) >> 8 );
 
-	buf[1] = (data & AD5293_DATA_LOW_MASK);
+	buf[1] = (data & LDOS_DATA_LOW_MASK);
 
 	// Select slave for this device.
 	ret = XSpi_SetSlaveSelect(&spi_ldo_i, ss);
@@ -257,9 +256,9 @@ int ad5293_rdac_wr(uint16_t data,uint32_t ss)
 }
 
 /**********************
-* @brief ad5293_rdac_rd
+* @brief LDOS_rdac_rd
 ***********************/
-int ad5293_rdac_rd(uint16_t *data, uint32_t ss)
+int ldos_rdac_rd(uint16_t *data, uint32_t ss)
 {
 	uint8_t buf[2];
 	int ret;
@@ -275,7 +274,7 @@ int ad5293_rdac_rd(uint16_t *data, uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | X  | X  | X  ||
-	buf[0] = AD5293_CMD_RDAC_READ;
+	buf[0] = LDOS_CMD_RDAC_READ;
 	buf[1] = 0x00;
 	ret = XSpi_Transfer(&spi_ldo_i, buf, NULL, 2);
 
@@ -289,21 +288,21 @@ int ad5293_rdac_rd(uint16_t *data, uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | X  | X  | X  ||
-	buf[0] = AD5293_CMD_NOP;
+	buf[0] = LDOS_CMD_NOP;
 	buf[1] = 0x00;
 	ret = XSpi_Transfer(&spi_ldo_i, buf, buf, 2);
 
 	// Set results into data variable.
 	*data = (buf[0] << 8) | buf[1];
-	*data &= (AD5293_DATA_HIGH_MASK | AD5293_DATA_LOW_MASK);
+	*data &= (LDOS_DATA_HIGH_MASK | LDOS_DATA_LOW_MASK);
 
 	return ret;
 }
 
 /******************
-* @brief ad5293_rst
+* @brief LDOS_rst
 *******************/
-int ad5293_rst(uint32_t ss)
+int ldos_rst(uint32_t ss)
 {
 	int ret;
 	uint8_t buf[2];
@@ -313,7 +312,7 @@ int ad5293_rst(uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | X  | X  | X  ||
-	buf[0] = AD5293_CMD_RESET;
+	buf[0] = LDOS_CMD_RESET;
 	buf[1] = 0x00;
 
 	// Select slave for this device.
@@ -327,9 +326,9 @@ int ad5293_rst(uint32_t ss)
 }
 
 /**********************
-* @brief ad5293_creg_wr
+* @brief LDOS_creg_wr
 ***********************/
-int ad5293_creg_wr(uint8_t c1, uint8_t c2, uint32_t ss)
+int ldos_creg_wr(uint8_t c1, uint8_t c2, uint32_t ss)
 {
 	uint8_t buf[2];
 
@@ -338,9 +337,9 @@ int ad5293_creg_wr(uint8_t c1, uint8_t c2, uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | C2 | C1 | X  ||
-	buf[0] = AD5293_CMD_CREG_WRITE;
-	buf[1] = ( (c2 & 1) << AD5293_CTRL_REG_C2_BIT_POS )
-		   | ( (c1 & 1) << AD5293_CTRL_REG_C1_BIT_POS );
+	buf[0] = LDOS_CMD_CREG_WRITE;
+	buf[1] = ( (c2 & 1) << LDOS_CTRL_REG_C2_BIT_POS )
+		   | ( (c1 & 1) << LDOS_CTRL_REG_C1_BIT_POS );
 
 	// Select slave for this device.
 	XSpi_SetSlaveSelect(&spi_ldo_i, ss);
@@ -350,9 +349,9 @@ int ad5293_creg_wr(uint8_t c1, uint8_t c2, uint32_t ss)
 }
 
 /**********************
-* @brief ad5293_creg_rd
+* @brief LDOS_creg_rd
 ***********************/
-int ad5293_creg_rd(uint8_t *c1, uint8_t *c2, uint32_t ss)
+int ldos_creg_rd(uint8_t *c1, uint8_t *c2, uint32_t ss)
 {
 	uint8_t buf[4];
 	int ret;
@@ -368,7 +367,7 @@ int ad5293_creg_rd(uint8_t *c1, uint8_t *c2, uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | X  | X  | X  ||
-	buf[0] = AD5293_CMD_CREG_READ;
+	buf[0] = LDOS_CMD_CREG_READ;
 	buf[1] = 0x00;
 	ret = XSpi_Transfer(&spi_ldo_i, buf, NULL, 2);
 
@@ -382,23 +381,23 @@ int ad5293_creg_rd(uint8_t *c1, uint8_t *c2, uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | X  | X  | X  ||
-	buf[0] = AD5293_CMD_NOP;
+	buf[0] = LDOS_CMD_NOP;
 	buf[1] = 0x00;
 	buf[2] = 0x00;
 	buf[3] = 0x00;
 	ret = XSpi_Transfer(&spi_ldo_i, buf, buf, 2);
 
 	// Write results into c1 and c2 variables.
-	*c1 = ( (buf[1] & AD5293_CTRL_REG_C1_BIT_MASK) >> AD5293_CTRL_REG_C1_BIT_POS );
-	*c2 = ( (buf[1] & AD5293_CTRL_REG_C2_BIT_MASK) >> AD5293_CTRL_REG_C2_BIT_POS );
+	*c1 = ( (buf[1] & LDOS_CTRL_REG_C1_BIT_MASK) >> LDOS_CTRL_REG_C1_BIT_POS );
+	*c2 = ( (buf[1] & LDOS_CTRL_REG_C2_BIT_MASK) >> LDOS_CTRL_REG_C2_BIT_POS );
 
 	return ret;
 }
 
 /********************
-* @brief ad5293_pdown
+* @brief LDOS_pdown
 *********************/
-int ad5293_pdown(uint8_t d0, uint32_t ss)
+int ldos_pdown(uint8_t d0, uint32_t ss)
 {
 	int ret;
 	uint8_t buf[2];
@@ -408,8 +407,8 @@ int ad5293_pdown(uint8_t d0, uint32_t ss)
 	// BIT # || 15 | 14 | 13 | 12 | 11 | 10 | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  ||
 	//       ||    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    ||
 	// 	 	 || 0  |  0 | C3 | C2 | C1 | C0 | X  | X  | X  | X  | X  | X  | X  | X  | X  | D0 ||
-	buf[0] = AD5293_CMD_PDOWN;
-	buf[1] = ( (d0 & 1) << AD5293_PDOWN_D0_BIT_POS );
+	buf[0] = LDOS_CMD_PDOWN;
+	buf[1] = ( (d0 & 1) << LDOS_PDOWN_D0_BIT_POS );
 
 	// Select slave for this device.
 	ret = XSpi_SetSlaveSelect(&spi_ldo_i, ss);
@@ -421,7 +420,7 @@ int ad5293_pdown(uint8_t d0, uint32_t ss)
 	return XSpi_Transfer(&spi_ldo_i, buf, NULL, 2);
 }
 
-int ad5293_sw_en(uint8_t sw, uint8_t en)
+int ldos_sw_en(uint8_t sw, uint8_t en)
 {
 	// Update variable.
 	switch (sw)
@@ -501,7 +500,7 @@ int ad5293_sw_en(uint8_t sw, uint8_t en)
 	return 0;
 }
 
-int ad5293_set_voltage(bias_status_t *bias, float value)
+int ldos_set_voltage(bias_status_t *bias, float value)
 {
 	float vout, vmin, vmax, vref, r1, r2p, rm, r2, rpot;
 	//uint16_t bits;
@@ -535,5 +534,5 @@ int ad5293_set_voltage(bias_status_t *bias, float value)
 	}
 
 	// Write value into register.
-	return ad5293_rdac_wr(reg_val, reg);
+	return ldos_rdac_wr(reg_val, reg);
 }

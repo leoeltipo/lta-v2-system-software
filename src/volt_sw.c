@@ -1,6 +1,6 @@
 /*
 * @file volt_switch.c
-* @brief Implementation of MAX14802 Driver.
+* @brief Implementation of VOLT_SW Driver.
 * @author Angel Soto (angel.soto@uns.edu.ar)
  */
 
@@ -13,7 +13,7 @@
 #include <xspi.h>
 #include <xgpio.h>
 #include "interrupt.h"
-#include "max14802.h"
+#include "volt_sw.h"
 
 /******************************************************************************/
 /************************ Variables Definitions *******************************/
@@ -34,7 +34,7 @@ XGpio gpio_volt_sw_i;
 /********************
 * @brief volt_sw_init
 *********************/
-int max14802_init(uint32_t spi_device_id, uint32_t gpio_device_id, bias_sw_t *bias_sw, gpio_sw_t *gpio_sw)
+int volt_sw_init(uint32_t spi_device_id, uint32_t gpio_device_id, bias_sw_t *bias_sw, gpio_sw_t *gpio_sw)
 {
 	int ret;
 	uint32_t base_addr		= 0;
@@ -118,8 +118,8 @@ int max14802_init(uint32_t spi_device_id, uint32_t gpio_device_id, bias_sw_t *bi
 	gpio_sw->state = 0x2;
 
 	// Set values to hardware.
-	//max14802_volt_sw_state_set(&(gpio_sw->sw_group.clr)	, &(gpio_sw->state), gpio_sw->sw_group.clr.status);
-	//max14802_volt_sw_state_set(&(gpio_sw->sw_group.le_n), &(gpio_sw->state), gpio_sw->sw_group.le_n.status);
+	//VOLT_SW_volt_sw_state_set(&(gpio_sw->sw_group.clr)	, &(gpio_sw->state), gpio_sw->sw_group.clr.status);
+	//VOLT_SW_volt_sw_state_set(&(gpio_sw->sw_group.le_n), &(gpio_sw->state), gpio_sw->sw_group.le_n.status);
 
 	// Init switch state structure.
 	bias_sw->sw_group.ccd_vdd_sw.status = 0;
@@ -134,6 +134,14 @@ int max14802_init(uint32_t spi_device_id, uint32_t gpio_device_id, bias_sw_t *bi
 	bias_sw->sw_group.ccd_vsub_sw.bit_position = VOLT_SW_CCD_VSUB_SWITCH;
 	strcpy(bias_sw->sw_group.ccd_vsub_sw.name,"vsub_sw");
 
+	bias_sw->sw_group.vsub_load_sw.status = 0;
+	bias_sw->sw_group.vsub_load_sw.bit_position = VOLT_SW_VSUB_LOAD_SWITCH;
+	strcpy(bias_sw->sw_group.vsub_load_sw.name,"vsub_load_sw");
+
+	bias_sw->sw_group.vsub_rdiv_sw.status = 0;
+	bias_sw->sw_group.vsub_rdiv_sw.bit_position = VOLT_SW_VSUB_RDIV_SWITCH;
+	strcpy(bias_sw->sw_group.vsub_rdiv_sw.name,"vsub_rdiv_sw");
+
 	bias_sw->sw_group.ccd_vr_sw.status = 0;
 	bias_sw->sw_group.ccd_vr_sw.bit_position = VOLT_SW_CCD_VR_SWITCH;
 	strcpy(bias_sw->sw_group.ccd_vr_sw.name,"vr_sw");
@@ -147,21 +155,23 @@ int max14802_init(uint32_t spi_device_id, uint32_t gpio_device_id, bias_sw_t *bi
 	strcpy(bias_sw->sw_group.m15v_sw.name,"m15v_sw");
 
 	// Set values to hardware.
-	max14802_volt_sw_state_set(&(bias_sw->sw_group.ccd_vdd_sw)		, &(bias_sw->state), bias_sw->sw_group.ccd_vdd_sw.status);
-	max14802_volt_sw_state_set(&(bias_sw->sw_group.ccd_vdrain_sw)	, &(bias_sw->state), bias_sw->sw_group.ccd_vdrain_sw.status);
-	max14802_volt_sw_state_set(&(bias_sw->sw_group.ccd_vsub_sw)		, &(bias_sw->state), bias_sw->sw_group.ccd_vsub_sw.status);
-	max14802_volt_sw_state_set(&(bias_sw->sw_group.ccd_vr_sw)		, &(bias_sw->state), bias_sw->sw_group.ccd_vr_sw.status);
-	max14802_volt_sw_state_set(&(bias_sw->sw_group.p15v_sw)			, &(bias_sw->state), bias_sw->sw_group.p15v_sw.status);
-	max14802_volt_sw_state_set(&(bias_sw->sw_group.m15v_sw)			, &(bias_sw->state), bias_sw->sw_group.m15v_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.ccd_vdd_sw)		, &(bias_sw->state), bias_sw->sw_group.ccd_vdd_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.ccd_vdrain_sw)	, &(bias_sw->state), bias_sw->sw_group.ccd_vdrain_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.ccd_vsub_sw)		, &(bias_sw->state), bias_sw->sw_group.ccd_vsub_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.vsub_load_sw)	, &(bias_sw->state), bias_sw->sw_group.vsub_load_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.vsub_rdiv_sw)	, &(bias_sw->state), bias_sw->sw_group.vsub_rdiv_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.ccd_vr_sw)		, &(bias_sw->state), bias_sw->sw_group.ccd_vr_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.p15v_sw)			, &(bias_sw->state), bias_sw->sw_group.p15v_sw.status);
+	volt_sw_state_set(&(bias_sw->sw_group.m15v_sw)			, &(bias_sw->state), bias_sw->sw_group.m15v_sw.status);
 
 	return ret;
 }
 
 
 /**********************
- * brief max14802_clear
+ * brief VOLT_SW_clear
  **********************/
-void max14802_clear(bias_sw_status_t *clr, uint16_t *state)
+void volt_sw_clear(bias_sw_status_t *clr, uint16_t *state)
 {
 	// Assert clr.
 	clr->status = 1;
@@ -179,83 +189,10 @@ void max14802_clear(bias_sw_status_t *clr, uint16_t *state)
 	XGpio_DiscreteWrite(&gpio_volt_sw_i, 1, *state);
 }
 
-
-/*******************
-* @brief max14802_wr
-********************/
-int max14802_wr(uint16_t data)
-{
-	int ret;
-	uint8_t buf[2];
-
-	// Packet format:
-	// BIT # || 15 = -15V
-	//			13 = +15V
-	//			10 = CCD_VR
-	//			05 = CCD_VSUB
-	//			02 = CCD_VDRAIN
-	//			00 = CCD_VDD
-
-	buf[0] =  ( (data & 0xFF00) >> 8 );
-
-	buf[1] = (data & 0x00FF);
-
-	// Select slave for this device.
-	ret = XSpi_SetSlaveSelect(&spi_volt_sw_i, 1);
-	if (ret != XST_SUCCESS) {
-		return ret;
-	}
-
-	// Send data.
-	ret = XSpi_Transfer(&spi_volt_sw_i, buf, NULL, 2);
-
-	// Latch data to copy shift register into internal latch.
-	XGpio_DiscreteWrite(&gpio_volt_sw_i, 1, 0x0);
-
-	// Set LE_N back to logic one.
-	XGpio_DiscreteWrite(&gpio_volt_sw_i, 1, 0x2);
-
-
-	return ret;
-}
-
-/********************
- * @brief max14802_rd
- ********************/
-int max14802_rd(uint16_t *data)
-{
-	int ret;
-	uint8_t buf[2];
-
-	// Packet format:
-	// BIT # || 15 = -15V
-	//			13 = +15V
-	//			10 = CCD_VR
-	//			05 = CCD_VSUB
-	//			02 = CCD_VDRAIN
-	//			00 = CCD_VDD
-
-	// Select slave for this device.
-	ret = XSpi_SetSlaveSelect(&spi_volt_sw_i, 1);
-	if (ret != XST_SUCCESS) {
-		return ret;
-	}
-
-	// Read data.
-	buf[0] = 0x0;
-	buf[1] = 0x0;
-	ret = XSpi_Transfer(&spi_volt_sw_i, buf, buf, 2);
-
-	// Copy buffer into data.
-	*data = (buf[1] << 8) + (buf[0]);
-
-	return ret;
-}
-
 /***********************************
- * @brief max14802_volt_sw_state_set
+ * @brief VOLT_SW_volt_sw_state_set
  ***********************************/
-int max14802_volt_sw_state_set(bias_sw_status_t *bias_sw_status, uint16_t *state, uint8_t val)
+int volt_sw_state_set(bias_sw_status_t *bias_sw_status, uint16_t *state, uint8_t val)
 {
 
 	if (val==1)
@@ -269,35 +206,35 @@ int max14802_volt_sw_state_set(bias_sw_status_t *bias_sw_status, uint16_t *state
 		*state &= ~(1 << bias_sw_status->bit_position);
 	}
 
-	max14802_volt_sw_transfer(state);
+	volt_sw_wr(state);
 
 	return 0;
 
 }
 
 /***********************************
- * @brief max14802_volt_sw_state_get
+ * @brief VOLT_SW_volt_sw_state_get
  ***********************************/
-uint8_t max14802_volt_sw_state_get(bias_sw_status_t *bias_sw_status)
+uint8_t volt_sw_state_get(bias_sw_status_t *bias_sw_status)
 {
 	return bias_sw_status->status;
 }
 
 /**********************************
- * @brief max14802_volt_sw_transfer
+ * @brief VOLT_SW_volt_sw_transfer
  **********************************/
-int max14802_volt_sw_transfer(uint16_t *state)
+int volt_sw_wr(uint16_t *state)
 {
 
 	int ret;
 	uint8_t buf[2];
 
 	// Packet format:
-	// BIT # || 15    | 14 | 13   | 12 | 11 | 10     | 9  | 8  | 7  | 6  | 5        | 4  | 3  | 2          | 1  | 0       ||
-	//       ||       |    |      |    |    |        |    |    |    |    |          |    |    |            |    |         ||
-	// 	 	 || M15V  |  X | P15V | X  | X  | CCD_VR | X  | X  | X  | X  | CCD_VSUB | X  | X  | CCD_VDRAIN | X  | CCD_VDD ||
-	buf[0] = (*state & MAX14802_DATA_HIGH_MASK) >> 8;
-	buf[1] = (*state & MAX14802_DATA_LOW_MASK);
+	// BIT # || 15       | 14 | 13        | 12         | 11        | 10 | 9  | 8  | 7  | 6     | 5 | 4     | 3  | 2          | 1  | 0      ||
+	//       ||          |    |           |            |           |    |    |    |    |       |   |       |    |            |    |        ||
+	// 	 	 || CCD_VDD  |  X | VSUB_RDIV | VSUB_LOAD  | CCD_VSUB  | X  | X  | X  | X  | M15V  | X | P15V  | X  | CCD_VDRAIN | X  | CCD_VR ||
+	buf[0] = (*state & VOLT_SW_DATA_HIGH_MASK) >> 8;
+	buf[1] = (*state & VOLT_SW_DATA_LOW_MASK);
 
 	// Select slave for this device.
 	ret = XSpi_SetSlaveSelect(&spi_volt_sw_i, 1);

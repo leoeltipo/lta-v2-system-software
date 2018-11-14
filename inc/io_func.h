@@ -12,6 +12,11 @@
 
 #include "defines.h"
 
+#define IO_SPRINTF_BUFFER_LENGTH	256
+#define IO_INT2STR_BUFFER_LENGTH	12
+#define IO_UINT2STR_BUFFER_LENGTH	12
+#define IO_FLOAT2STR_BUFFER_LENGTH	10
+
 void io_init(system_state_t *sys);
 
 void io_sprintf(char *str, char *fmt, ...);

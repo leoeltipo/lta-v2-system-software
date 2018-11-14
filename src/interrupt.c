@@ -78,6 +78,7 @@ void intc_disable(u8 id)
 void timer_isr(void)
 {
 	interrupt_counter--;
+	//print("On isr\r\n");
 }
 
 void tdelay_ms(uint32_t t)

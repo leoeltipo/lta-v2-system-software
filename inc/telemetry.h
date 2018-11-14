@@ -110,37 +110,38 @@ typedef struct {
 	telemetry_source_t ogb;
 	telemetry_source_t rga;
 	telemetry_source_t rgb;
-	telemetry_source_t dg;
-	telemetry_source_t tg;
+	telemetry_source_t dga;
+	telemetry_source_t dgb;
 	telemetry_source_t h1a;
 	telemetry_source_t h1b;
-	telemetry_source_t h2a;
-	telemetry_source_t h2b;
+	telemetry_source_t h2c;
+	telemetry_source_t v2c;
 	telemetry_source_t h3a;
 	telemetry_source_t h3b;
-	telemetry_source_t v1c;
-	telemetry_source_t v2c;
-	telemetry_source_t v3c;
-	telemetry_source_t rtd;
-	telemetry_source_t vida_offset;
-	telemetry_source_t vidb_offset;
-	telemetry_source_t vidc_offset;
-	telemetry_source_t vidd_offset;
+	telemetry_source_t v1a;
+	telemetry_source_t v1b;
+	telemetry_source_t v3a;
+	telemetry_source_t v3b;
+	telemetry_source_t tga;
+	telemetry_source_t tgb;
+
 	telemetry_source_t v_p2v5;
 	telemetry_source_t v_p1v0;
-	telemetry_source_t v_p6v0;
+	telemetry_source_t v_p4v2;
 	telemetry_source_t v_p1v8;
 	telemetry_source_t v_p5v0;
-	telemetry_source_t v_m2v0;
+	telemetry_source_t v_p2v5a;
 	telemetry_source_t v_p3v3;
-	telemetry_source_t v_p1v2;
+
 	telemetry_source_t v_m15v0;
 	telemetry_source_t v_p12v0;
 	telemetry_source_t v_p15v0;
+
 	telemetry_source_t ccd_vdd;
 	telemetry_source_t ccd_vr;
 	telemetry_source_t ccd_vsub;
 	telemetry_source_t ccd_vdrain;
+
 } telemetry_group_t;
 
 int telemetry_init(telemetry_group_t *sources, uint32_t spi_device_id, uint32_t gpio_device_id);

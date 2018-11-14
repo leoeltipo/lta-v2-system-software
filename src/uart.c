@@ -1,7 +1,5 @@
 #include "uart.h"
 #include "xuartlite.h"
-#include "packer.h"
-#include "adc.h"
 #include <stdio.h>
 
 XUartLite Uart;
