@@ -11,7 +11,7 @@
 #include "xparameters.h"
 
 #include "dac.h"
-//#include "packer.h"
+#include "packer.h"
 #include "ldos.h"
 #include "telemetry.h"
 #include "generic_vars.h"
@@ -34,7 +34,7 @@
 
 typedef struct {
 	seq_t 						seq;
-	//packer_sw_group_status_t 	packer_sw;
+	packer_sw_group_status_t 	packer_sw;
 	//gpio_adc_t 					gpio_adc;
 	gpio_sw_t 					gpio_sw;
 	bias_sw_t 					bias_sw;

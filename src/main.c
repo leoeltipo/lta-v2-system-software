@@ -75,8 +75,8 @@ int main ()
    //mprint("--- Initialize Smart Buffer ---\r\n");
    //smart_buffer_init(&(sys.smart_buffer));
 
-   //mprint("--- Initialize packer ---\r\n");
-   //packer_init(&(sys.packer_sw));
+   mprint("--- Initialize packer ---\r\n");
+   packer_init(&(sys.packer_sw));
 
    //mprint("--- Initialize CDS core ---\r\n");
    //cds_core_init(&(sys.cds));
