@@ -31,15 +31,15 @@
 #include "xparameters.h"
 #include "xil_cache.h"
 
-#include "dac.h"
+//#include "dac.h"
 #include "defines.h"
 #include "io_func.h"
 #include "interrupt.h"
-#include "ldos.h"
+//#include "ldos.h"
 #include "uart.h"
-#include "leds.h"
-#include "telemetry.h"
-#include "volt_sw.h"
+//#include "leds.h"
+//#include "telemetry.h"
+//#include "volt_sw.h"
 //#include "smart_buffer.h"
 //#include "cds_core.h"
 //#include "packer.h"
@@ -78,8 +78,8 @@ int main ()
    mprint("--- Initialize packer ---\r\n");
    packer_init(&(sys.packer_sw));
 
-   //mprint("--- Initialize CDS core ---\r\n");
-   //cds_core_init(&(sys.cds));
+   mprint("--- Initialize CDS core ---\r\n");
+   cds_core_init(&(sys.cds));
 
    mprint("--- Initialize sequencer ---\r\n");
    sequencer_init(&(sys.seq));

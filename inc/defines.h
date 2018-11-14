@@ -20,7 +20,7 @@
 //#include "smart_buffer.h"
 #include "eth.h"
 #include "sequencer.h"
-//#include "cds_core.h"
+#include "cds_core.h"
 
 // ASCII Characters.
 #define ASCII_CHAR_BS 	8	// Back space.
@@ -41,7 +41,7 @@ typedef struct {
 	clk_sw_t 					clk_sw;
 	clk_group_status_t 			clks;
 	bias_group_status_t 		biases;
-	//cds_var_group_status_t 		cds;
+	cds_var_group_status_t 		cds;
 	telemetry_group_t 			telemetry;
 	uint8_t 					go;
 	//exec_t 						exec;
