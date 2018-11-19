@@ -38,7 +38,7 @@ typedef struct {
 	uint8_t min;
 	uint8_t max;
 	uint8_t bit_position;
-	char name[10];
+	char name[15];
 } bias_sw_status_t;
 
 typedef struct {

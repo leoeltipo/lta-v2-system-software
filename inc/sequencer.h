@@ -37,7 +37,7 @@ typedef struct {
 typedef struct {
 	uint32_t program[SEQUENCER_MEMORY_SIZE];
 	uint32_t size;
-	char name[10];
+	char name[50];
 }sequencer_t;
 
 typedef struct {

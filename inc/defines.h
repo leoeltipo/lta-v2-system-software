@@ -17,10 +17,12 @@
 #include "generic_vars.h"
 #include "leds.h"
 #include "volt_sw.h"
-//#include "smart_buffer.h"
+#include "smart_buffer.h"
 #include "eth.h"
 #include "sequencer.h"
 #include "cds_core.h"
+#include "adc.h"
+#include "exec.h"
 
 // ASCII Characters.
 #define ASCII_CHAR_BS 	8	// Back space.
@@ -35,7 +37,7 @@
 typedef struct {
 	seq_t 						seq;
 	packer_sw_group_status_t 	packer_sw;
-	//gpio_adc_t 					gpio_adc;
+	gpio_adc_t 					gpio_adc;
 	gpio_sw_t 					gpio_sw;
 	bias_sw_t 					bias_sw;
 	clk_sw_t 					clk_sw;
@@ -44,10 +46,10 @@ typedef struct {
 	cds_var_group_status_t 		cds;
 	telemetry_group_t 			telemetry;
 	uint8_t 					go;
-	//exec_t 						exec;
+	exec_t 						exec;
 	generic_vars_t 				generic_vars;
 	leds_t						leds;
-	//smart_buffer_group_status_t	smart_buffer;
+	smart_buffer_group_status_t	smart_buffer;
 	eth_t						eth;
 } system_state_t;
 
