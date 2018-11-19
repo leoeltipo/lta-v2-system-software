@@ -39,7 +39,7 @@ void eth_init(uint32_t gpio_device_id, eth_t *eth)
 	void * ptr;
 
 	// First address of the low speed memory defined in xparameters.h.
-	ptr = (void *)XPAR_RAM_ETH_CTRL_S_AXI_BASEADDR;
+	ptr = (void *)XPAR_ETH_HIE_RAM_ETH_CTRL_S_AXI_BASEADDR;
 	eth_mbus = (void *)ptr;
 
 	ptr += sizeof(eth_bus_t);

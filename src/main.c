@@ -31,18 +31,11 @@
 #include "xparameters.h"
 #include "xil_cache.h"
 
-//#include "dac.h"
 #include "defines.h"
 #include "io_func.h"
 #include "interrupt.h"
-//#include "ldos.h"
 #include "uart.h"
-//#include "leds.h"
-//#include "telemetry.h"
-//#include "volt_sw.h"
-//#include "smart_buffer.h"
-//#include "cds_core.h"
-//#include "packer.h"
+#include "excecute.h"
 
 system_state_t sys;
 
@@ -51,13 +44,17 @@ int main ()
    Xil_ICacheEnable();
    Xil_DCacheEnable();
 
-   float value;
-   telemetry_source_t *tel_src;
-   bias_status_t *bias;
+   // Variables for command parsing.
+   int status = 0;
+   int nWords = 0;
+   uint8_t bufWords[USERCOMMANDLENGTH];
+   uint8_t userWord[USERCOMMANDLENGTH];
+   int userWordInd = 0;
+   char errStr[256];
 
    // Init generic vars, eth driver, io_func (stdout control) and interrupts.
    generic_vars_init(&(sys.generic_vars));
-   eth_init(XPAR_GPIO_ETH_DEVICE_ID,&(sys.eth));
+   eth_init(XPAR_ETH_HIE_GPIO_ETH_DEVICE_ID,&(sys.eth));
    io_init(&sys);
    intc_init(XPAR_INTC_0_DEVICE_ID);
 
@@ -72,16 +69,22 @@ int main ()
    mprint("--- Initialize Leds ---\r\n");
    gpio_leds_init(XPAR_LEDS_GPIO_DEVICE_ID, &(sys.leds));
 
-   //mprint("--- Initialize Smart Buffer ---\r\n");
-   //smart_buffer_init(&(sys.smart_buffer));
+   mprint("--- Initialize Exec function catalog ---\r\n");
+   exec_init(&(sys.exec));
 
-   mprint("--- Initialize packer ---\r\n");
+   mprint("--- Initialize ADC 15 MHz controller ---\r\n");
+   adc_init(XPAR_ADC_GPIO_ADC_DEVICE_ID, &(sys.gpio_adc));
+
+   mprint("--- Initialize Smart Buffer ---\r\n");
+   smart_buffer_init(&(sys.smart_buffer));
+
+   mprint("--- Initialize Packer ---\r\n");
    packer_init(&(sys.packer_sw));
 
    mprint("--- Initialize CDS core ---\r\n");
    cds_core_init(&(sys.cds));
 
-   mprint("--- Initialize sequencer ---\r\n");
+   mprint("--- Initialize Sequencer ---\r\n");
    sequencer_init(&(sys.seq));
 
    mprint("--- Initialize Telemetry ---\r\n");
@@ -96,28 +99,121 @@ int main ()
    mprint("--- Initialize Voltage Switch ---\r\n");
    volt_sw_init(XPAR_SPI_VOLT_SW_DEVICE_ID, XPAR_GPIO_VOLT_SW_DEVICE_ID, &(sys.bias_sw), &(sys.gpio_sw));
 
-   tel_src = &sys.telemetry.v_p1v8;
-   telemetry_read(tel_src, &value);
+   mprint("--- ############################### ---\r\n");
+   mprint("--- System Initialization Completed ---\r\n");
+   mprint("--- ############################### ---\r\n");
+   mprint("\r\n");
 
-   bias = &sys.biases.vsub;
-   ldos_set_voltage(bias, 50);
-
-   dac_set_voltage(&(sys.clks.v1ah), 7.5);
-   dac_set_voltage(&(sys.clks.v1al), 7.5);
-
-   dac_set_voltage(&(sys.clks.h1ah), 5);
-   dac_set_voltage(&(sys.clks.h1al), 5);
-
-   volt_sw_state_set(&(sys.bias_sw.sw_group.p15v_sw), &(sys.bias_sw.state), 1);
-
-   //packer_change_sw_status(&(sys.packer_sw.source), PACKER_TRSRC_RAW_CHA);
-   //packer_change_sw_status(&(sys.packer_sw.start), PACKER_START_ON);
-   //packer_change_sw_status(&(sys.packer_sw.start), PACKER_START_OFF);
-
-   while(1)
+   // Blink led to indicate end of initialization.
+   for (int i=0; i<10; i++)
    {
-	   tdelay_s(1);
-	   mprint("Hola\r\n");
+	   gpio_leds_change_state(&(sys.leds.leds_group.led0), &(sys.leds.state), GPIO_LEDS_LED_ON);
+	   tdelay_ms(50);
+	   gpio_leds_change_state(&(sys.leds.leds_group.led0), &(sys.leds.state), GPIO_LEDS_LED_OFF);
+	   tdelay_ms(50);
+   }
+   gpio_leds_change_state(&(sys.leds.leds_group.led0), &(sys.leds.state), GPIO_LEDS_LED_ON);
+
+   /* ********************************************** */
+   /* **************** MAIN LOOP ******************* */
+   /* ********************************************** */
+   // Initialize buffers.
+   for	(int u = 0; u<USERCOMMANDLENGTH; u = u +1)
+   {
+	   bufWords[u] = 0;
+   }
+   for	(int u = 0; u<USERCOMMANDLENGTH; u = u +1)
+   {
+	   userWord[u] = 0;
+   }
+   mprint("Accepting comands...\r\n");
+
+
+   while (1)
+   {
+	   nWords = uart_rcv(bufWords);
+	   if (nWords == 0)
+	   {
+		   nWords = eth_mdata_get(bufWords);
+	   }
+
+	   for (int iChar = 0; iChar<nWords; iChar++)
+	   {
+		   if (bufWords[iChar] == ASCII_CHAR_CR)
+		   {
+			   if (sys.generic_vars.echo.value == GENERIC_VARS_ECHO_ON)
+			   {
+				   print("\r\n");
+			   }
+
+			   // Executing command...
+			   gpio_leds_change_state(&(sys.leds.leds_group.led1), &(sys.leds.state), GPIO_LEDS_LED_ON);
+
+			   // Execute command.
+			   status = excecute_interpret(&sys,(char *)userWord, errStr);
+			   mprint("Done\r\n");
+			   if (status != 0)
+			   {
+				   mprint(errStr);
+			   }
+
+			   // Clean User Command Buffer.
+			   for	(int u=0; u<USERCOMMANDLENGTH; u++)
+			   {
+				   userWord[u] = 0;
+			   }
+			   userWordInd = 0;
+
+			   gpio_leds_change_state(&(sys.leds.leds_group.led1), &(sys.leds.state), GPIO_LEDS_LED_OFF);
+		   }
+		   else if (	bufWords[iChar] == ASCII_CHAR_BS 	||
+				   bufWords[iChar] == ASCII_CHAR_CAN 	||
+				   bufWords[iChar] == ASCII_CHAR_EM 	||
+				   bufWords[iChar] == ASCII_CHAR_SUB 	||
+				   bufWords[iChar] == ASCII_CHAR_ESC 	||
+				   bufWords[iChar] == ASCII_CHAR_FS 	||
+				   bufWords[iChar] == ASCII_CHAR_DEL
+		   )
+		   {
+			   // Clean User Command Buffer.
+			   for	(int u=0; u<USERCOMMANDLENGTH; u++)
+			   {
+				   userWord[u] = 0;
+			   }
+			   userWordInd = 0;
+
+			   if ( (int)sys.generic_vars.echo.value == GENERIC_VARS_ECHO_ON) {
+				   print("\33[2K");
+				   print("\r\n");
+			   }
+		   }
+		   else
+		   {
+			   //add character to the user vector
+			   userWord[userWordInd] = bufWords[iChar];
+			   if ( (int)sys.generic_vars.echo.value == GENERIC_VARS_ECHO_ON) {
+				   print((const char *) &(userWord[userWordInd]));
+			   }
+			   userWordInd = userWordInd + 1;
+		   }
+
+	   }
+
+	   // Check if sequencer has finished.
+	   if (sequencer_eos(&(sys.seq)))
+	   {
+		   packer_change_sw_status(&(sys.packer_sw.start),PACKER_START_OFF);
+		   mprint("Read done\r\n");
+	   }
+
+	   // Check if transfer has finished.
+	   if (smart_buffer_eot((&(sys.smart_buffer))))
+	   {
+		   smart_buffer_change_status(&(sys.smart_buffer.capture_start), SMART_BUFFER_CAPTURE_STOP);
+		   smart_buffer_change_status(&(sys.smart_buffer.transfer_start), SMART_BUFFER_TRNASFER_STOP);
+		   mprint("Transfer done\r\n");
+	   }
+
    }
 
 
