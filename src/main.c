@@ -73,7 +73,7 @@ int main ()
    exec_init(&(sys.exec));
 
    mprint("--- Initialize ADC 15 MHz controller ---\r\n");
-   adc_init(XPAR_ADC_GPIO_ADC_DEVICE_ID, &(sys.gpio_adc));
+   adc_init(XPAR_GPIO_ADC_DEVICE_ID, &(sys.gpio_adc));
 
    mprint("--- Initialize Smart Buffer ---\r\n");
    smart_buffer_init(&(sys.smart_buffer));
