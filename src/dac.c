@@ -350,7 +350,7 @@ int dac_init(clk_sw_t * clk_sw, clk_group_status_t *clks, uint32_t spi_device_id
 	clks->v1bh.vmax = (float)DAC_VOLTAGE_MAX;
 	clks->v1bh.vref = (float)DAC_VREF;
 	clks->v1bh.offset = (float)DAC_CH1_OFFSET_DEFAULT;
-	clks->v1bh.gain = (float)DAC_ALL_GAIN;
+	clks->v1bh.gain = (float)DAC_VXC_GAIN;
 	clks->v1bh.max_code = (float)(1 << DAC_BITS);
 	strcpy(clks->v1bh.name, "v1bh");
 
@@ -360,7 +360,7 @@ int dac_init(clk_sw_t * clk_sw, clk_group_status_t *clks, uint32_t spi_device_id
 	clks->v1bl.vmax = (float)DAC_VOLTAGE_MAX;
 	clks->v1bl.vref = (float)DAC_VREF;
 	clks->v1bl.offset = (float)DAC_CH1_OFFSET_DEFAULT;
-	clks->v1bl.gain = (float)DAC_ALL_GAIN;
+	clks->v1bl.gain = (float)DAC_VXC_GAIN;
 	clks->v1bl.max_code = (float)(1 << DAC_BITS);
 	strcpy(clks->v1bl.name, "v1bl");
 
@@ -601,7 +601,7 @@ int dac_init(clk_sw_t * clk_sw, clk_group_status_t *clks, uint32_t spi_device_id
 	clks->v3bh.vmax = (float)DAC_VOLTAGE_MAX;
 	clks->v3bh.vref = (float)DAC_VREF;
 	clks->v3bh.offset = (float)DAC_CH4_OFFSET_DEFAULT;
-	clks->v3bh.gain = (float)DAC_ALL_GAIN;
+	clks->v3bh.gain = (float)DAC_VXC_GAIN;
 	clks->v3bh.max_code = (float)(1 << DAC_BITS);
 	strcpy(clks->v3bh.name, "v3bh");
 
@@ -611,7 +611,7 @@ int dac_init(clk_sw_t * clk_sw, clk_group_status_t *clks, uint32_t spi_device_id
 	clks->v3bl.vmax = (float)DAC_VOLTAGE_MAX;
 	clks->v3bl.vref = (float)DAC_VREF;
 	clks->v3bl.offset = (float)DAC_CH4_OFFSET_DEFAULT;
-	clks->v3bl.gain = (float)DAC_ALL_GAIN;
+	clks->v3bl.gain = (float)DAC_VXC_GAIN;
 	clks->v3bl.max_code = (float)(1 << DAC_BITS);
 	strcpy(clks->v3bl.name, "v3bl");
 
