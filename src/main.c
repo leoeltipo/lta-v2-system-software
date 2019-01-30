@@ -36,6 +36,7 @@
 #include "interrupt.h"
 #include "uart.h"
 #include "excecute.h"
+#include "flash.h"
 
 system_state_t sys;
 
@@ -65,6 +66,9 @@ int main ()
 
    mprint("--- Initialize Uart ---\r\n");
    uart_init(XPAR_UART_DEVICE_ID);
+
+   mprint("--- Initialize Flash ---\r\n");
+   flash_init(XPAR_SPI_FLASH_DEVICE_ID, &(sys.flash));
 
    mprint("--- Initialize Leds ---\r\n");
    gpio_leds_init(XPAR_LEDS_GPIO_DEVICE_ID, &(sys.leds));
@@ -98,6 +102,9 @@ int main ()
 
    mprint("--- Initialize Voltage Switch ---\r\n");
    volt_sw_init(XPAR_SPI_VOLT_SW_DEVICE_ID, XPAR_GPIO_VOLT_SW_DEVICE_ID, &(sys.bias_sw), &(sys.gpio_sw));
+
+   // Change IP with value programmed on Flash.
+   gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
 
    mprint("--- ############################### ---\r\n");
    mprint("--- System Initialization Completed ---\r\n");

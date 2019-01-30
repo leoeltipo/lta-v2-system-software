@@ -17,6 +17,7 @@
 #include "uart.h"
 #include "excecute.h"
 #include "io_func.h"
+#include "flash.h"
 
 
 int excecute_interpret(system_state_t *sys, char *userWord, char *errStr)
@@ -49,6 +50,11 @@ int excecute_interpret(system_state_t *sys, char *userWord, char *errStr)
 	   {
 		   excecute_help(sys);
 		   return 0;
+	   }
+	   // flash_info command.
+	   else if (strcmp(commandWord[0].word,"flash_info")==0)
+	   {
+		   flash_printBoardInfo(&(sys->flash));
 	   }
 	   else
 	   {

@@ -23,6 +23,7 @@
 #include "cds_core.h"
 #include "adc.h"
 #include "exec.h"
+#include "flash.h"
 
 // ASCII Characters.
 #define ASCII_CHAR_BS 	8	// Back space.
@@ -51,6 +52,7 @@ typedef struct {
 	leds_t						leds;
 	smart_buffer_group_status_t	smart_buffer;
 	eth_t						eth;
+	flash_version_t				flash;
 } system_state_t;
 
 
