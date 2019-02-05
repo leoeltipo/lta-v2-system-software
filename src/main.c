@@ -111,6 +111,13 @@ int main ()
    mprint("--- ############################### ---\r\n");
    mprint("\r\n");
 
+   mprint("--- Setting IP stored in flash ---\r\n");
+   char ip[50];
+   io_sprintf(ip, "--- New IP: %s\r\n",sys.flash.ip.str);
+   mprint(ip);
+   mprint("Warning: communication with the ETH will be lost!!!\r\n");
+   gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
+
    // Blink led to indicate end of initialization.
    for (int i=0; i<10; i++)
    {
@@ -124,6 +131,7 @@ int main ()
    /* ********************************************** */
    /* **************** MAIN LOOP ******************* */
    /* ********************************************** */
+   mprint("Accepting comands...\r\n");
    // Initialize buffers.
    for	(int u = 0; u<USERCOMMANDLENGTH; u = u +1)
    {
@@ -133,7 +141,6 @@ int main ()
    {
 	   userWord[u] = 0;
    }
-   mprint("Accepting comands...\r\n");
 
 
    while (1)
