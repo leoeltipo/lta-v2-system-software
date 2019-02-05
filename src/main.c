@@ -104,7 +104,7 @@ int main ()
    volt_sw_init(XPAR_SPI_VOLT_SW_DEVICE_ID, XPAR_GPIO_VOLT_SW_DEVICE_ID, &(sys.bias_sw), &(sys.gpio_sw));
 
    // Change IP with value programmed on Flash.
-   gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
+   //gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
 
    mprint("--- ############################### ---\r\n");
    mprint("--- System Initialization Completed ---\r\n");
