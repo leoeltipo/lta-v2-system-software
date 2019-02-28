@@ -5,12 +5,8 @@ Software for the control of the LTA board first fabrication.
 
 * Create a SDK the usual way (Export Hardware and Launch SDK).
 * Create an application (Empty app) the usual way.
-* Navigate the Git Console to that location, where the src/ directory is.
-* git init to start a new empty git repository.
-* Register that repo with the remote GitHub repo:
--> git remote add origin https://github.com/leoeltipo/lta-v2-system-software.git
-* git pull origin master
-* git push origin master
+* Clone the repository to any location.
+* Copy the contents of the directory (.git, inc/ and src/) into the newly created empty application.
 
 Now the files are already cloned.
 
