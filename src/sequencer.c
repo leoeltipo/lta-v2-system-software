@@ -19,12 +19,22 @@
 
 int sequencer_init(seq_t *seq)
 {
-	//initialize sequencer status
-	seq->sw_group.start.status = 0;
-	seq->sw_group.start.min = 0;
-	seq->sw_group.start.max = 1;
-	seq->sw_group.start.reg_offset = SEQUENCER_STOP_SEQUENCE_OFFSET;
-	strcpy(seq->sw_group.start.name,"seqStart");
+	// Initialize sequence register structure.
+	seq->sw_group.stop.status = 0;
+	seq->sw_group.stop.min = 0;
+	seq->sw_group.stop.max = 1;
+	seq->sw_group.stop.reg_offset = SEQUENCER_STOP_SEQUENCE_OFFSET;
+	strcpy(seq->sw_group.stop.name,"seqStart");
+
+	seq->sw_group.stop_src.status = SEQUENCER_STOP_SRC_INTERNAL;
+	seq->sw_group.stop_src.min = SEQUENCER_STOP_SRC_INTERNAL;
+	seq->sw_group.stop_src.max = SEQUENCER_STOP_SRC_EXTERNAL;
+	seq->sw_group.stop_src.reg_offset = SEQUENCER_STOP_SRC_OFFSET;
+	strcpy(seq->sw_group.stop_src.name,"seqStartSrc");
+
+	// Write values to hardware.
+	seq_change_sw_status(&(seq->sw_group.stop), seq->sw_group.stop.status);
+	seq_change_sw_status(&(seq->sw_group.stop_src), seq->sw_group.stop_src.status);
 
 	//initialize sequencer
 	seq->sequencer.size = SEQUENCER_MEMORY_SIZE;
@@ -153,7 +163,7 @@ int sequencer_eos(seq_t *seq)
 		// If it finished, stop the sequencer.
 		SEQUENCER_mWriteReg(XPAR_SEQUENCER_HIE_SEQUENCER_BASEADDR,SEQUENCER_STOP_SEQUENCE_OFFSET, 0x0);
 		//move sequencer start switch to 0
-		seq_change_sw_status(&(seq->sw_group.start), 0);
+		seq_change_sw_status(&(seq->sw_group.stop), 0);
 		return 1;
 	}
 	else

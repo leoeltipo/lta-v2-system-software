@@ -24,6 +24,8 @@
 #include "adc.h"
 #include "exec.h"
 #include "flash.h"
+#include "master_sel.h"
+#include "sync_gen.h"
 
 // ASCII Characters.
 #define ASCII_CHAR_BS 	8	// Back space.
@@ -53,6 +55,8 @@ typedef struct {
 	smart_buffer_group_status_t	smart_buffer;
 	eth_t						eth;
 	flash_version_t				flash;
+	master_sel_t				master_sel;
+	sync_gen_t					sync_gen;
 } system_state_t;
 
 

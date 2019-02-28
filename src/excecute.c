@@ -146,6 +146,8 @@ int excecute_interpret(system_state_t *sys, char *userWord, char *errStr)
 	   return -1;
 	   break;
    }
+
+   return 0;
 }
 
 void excecute_help(system_state_t *sys)
@@ -461,6 +463,60 @@ int excecute_get(system_state_t *sys, const char *varID, char *errStr) {
 			return 0;
 		}
 		eth_var++;
+	}
+	if (flag_all) mprint("\r\n");
+
+	// Master Selection Logic.
+	if (flag_all) mprint("### Master Selection ###\r\n");
+	master_sel_status_t *master_sel_var = (master_sel_status_t *) &(sys->master_sel);
+	int nMstSel = sizeof(master_sel_t)/sizeof(master_sel_status_t);
+	for(int i = 0; i < nMstSel; i++)
+	{
+		if (flag_all)
+		{
+			// Update value from hadrware.
+			master_sel_update_reg(master_sel_var);
+
+			// Print value.
+			io_sprintf(str, "%s = %d\r\n", master_sel_var->name, master_sel_var->value);
+			mprint(str);
+		}
+		else if (strcmp(varID, master_sel_var->name)==0)
+		{
+			// Update value from hadrware.
+			master_sel_update_reg(master_sel_var);
+
+			// Print value.
+			io_sprintf(str, "%s = %d\r\n", master_sel_var->name, master_sel_var->value);
+			mprint(str);
+
+			return 0;
+		}
+		master_sel_var++;
+	}
+	if (flag_all) mprint("\r\n");
+
+	// Sync Generation Logic.
+	if (flag_all) mprint("### Sync Generator ###\r\n");
+	sync_gen_status_t *sync_gen_var = (sync_gen_status_t *) &(sys->sync_gen);
+	int nSyncGen = sizeof(sync_gen_t)/sizeof(sync_gen_status_t);
+	for(int i = 0; i < nSyncGen; i++)
+	{
+		if (flag_all)
+		{
+			// Print value.
+			io_sprintf(str, "%s = %d\r\n", sync_gen_var->name, sync_gen_var->value);
+			mprint(str);
+		}
+		else if (strcmp(varID, sync_gen_var->name)==0)
+		{
+			// Print value.
+			io_sprintf(str, "%s = %d\r\n", sync_gen_var->name, sync_gen_var->value);
+			mprint(str);
+
+			return 0;
+		}
+		sync_gen_var++;
 	}
 	if (flag_all) mprint("\r\n");
 
@@ -817,8 +873,6 @@ int excecute_set(system_state_t *sys, char *varID, char *varVal, char *errStr) {
 		smart_buffer_var++;
 	}
 
-
-
 	// Ethernet.
 	eth_status_t *eth_var = (eth_status_t *) &(sys->eth);
 	int nEth = sizeof(eth_t)/sizeof(eth_status_t);
@@ -838,7 +892,27 @@ int excecute_set(system_state_t *sys, char *varID, char *varVal, char *errStr) {
 		eth_var++;
 	}
 
+	// Sync Generation Logic.
+	sync_gen_status_t *sync_gen_var = (sync_gen_status_t *) &(sys->sync_gen);
+	int nSyncGen = sizeof(sync_gen_t)/sizeof(sync_gen_status_t);
+	for(int i = 0; i < nSyncGen; i++)
+	{
+		if (strcmp(varID, sync_gen_var->name)==0)
+		{
+			// Change value.
+			status = sync_gen_change_status(sync_gen_var, (uint16_t) value);
 
+			if (status != 0)
+			{
+				io_sprintf(errStr, "%s out of range.\r\n", sync_gen_var->name);
+				return -1;
+			}
+			return status;
+		}
+		sync_gen_var++;
+	}
+
+	// Sequencer in RAM.
 	if (strcmp(varID,"seq")==0)
 	{
 		if(strcmp(varVal,"clear")==0)

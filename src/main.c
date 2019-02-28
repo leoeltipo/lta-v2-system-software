@@ -37,6 +37,7 @@
 #include "uart.h"
 #include "excecute.h"
 #include "flash.h"
+#include "master_sel.h"
 
 system_state_t sys;
 
@@ -73,6 +74,12 @@ int main ()
    mprint("--- Initialize Leds ---\r\n");
    gpio_leds_init(XPAR_LEDS_GPIO_DEVICE_ID, &(sys.leds));
 
+   mprint("--- Initialize Master Selection Logic ---\r\n");
+   master_sel_init(&(sys.master_sel));
+
+   mprint("--- Initialize Sync Generation Logic ---\r\n");
+   sync_gen_init(&(sys.sync_gen));
+
    mprint("--- Initialize Exec function catalog ---\r\n");
    exec_init(&(sys.exec));
 
@@ -102,9 +109,6 @@ int main ()
 
    mprint("--- Initialize Voltage Switch ---\r\n");
    volt_sw_init(XPAR_SPI_VOLT_SW_DEVICE_ID, XPAR_GPIO_VOLT_SW_DEVICE_ID, &(sys.bias_sw), &(sys.gpio_sw));
-
-   // Change IP with value programmed on Flash.
-   //gpio_eth_change_state(&(sys.eth.ip_low), flash_getIpLow(&(sys.flash)));
 
    mprint("--- ############################### ---\r\n");
    mprint("--- System Initialization Completed ---\r\n");
@@ -141,7 +145,6 @@ int main ()
    {
 	   userWord[u] = 0;
    }
-
 
    while (1)
    {
@@ -235,7 +238,7 @@ int main ()
 
    print("---Exiting main---\n\r");
 
-   Xil_DCacheDisable();
-   Xil_ICacheDisable();
+   //Xil_DCacheDisable();
+   //Xil_ICacheDisable();
    return 0;
 }

@@ -14,12 +14,14 @@ int generic_vars_init(generic_vars_t *vars)
 	strcpy(vars->echo.name,"echo");
 	vars->echo.min = GENERIC_VARS_ECHO_MIN;
 	vars->echo.max = GENERIC_VARS_ECHO_MAX;
-	vars->echo.value = GENERIC_VARS_ECHO_OFF;
+	//vars->echo.value = GENERIC_VARS_ECHO_OFF;
+	vars->echo.value = GENERIC_VARS_ECHO_ON;
 
 	strcpy(vars->outeth.name, "outeth");
 	vars->outeth.min = GENERIC_VARS_OUTETH_MIN;
 	vars->outeth.max = GENERIC_VARS_OUTETH_MAX;
-	vars->outeth.value = GENERIC_VARS_OUTETH_ON;
+	//vars->outeth.value = GENERIC_VARS_OUTETH_ON;
+	vars->outeth.value = GENERIC_VARS_OUTETH_OFF;
 
 	return 0;
 }

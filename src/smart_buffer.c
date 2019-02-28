@@ -154,7 +154,6 @@ void smart_buffer_init(smart_buffer_group_status_t *smart_buffer)
 	smart_buffer->transfer_end.reg_mask 		= SMART_BUFFER_TRANSFER_END_REG_MASK;
 	strcpy(smart_buffer->transfer_end.name,"bufTraEnd");
 
-	// TODO: RESET_REG not implemented yet in hardware.
 	smart_buffer->reset.value 					= SMART_BUFFER_RESET_OFF;
 	smart_buffer->reset.min 					= SMART_BUFFER_RESET_OFF;
 	smart_buffer->reset.max 					= SMART_BUFFER_RESET_ON;

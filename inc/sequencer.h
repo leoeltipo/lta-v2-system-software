@@ -13,9 +13,13 @@
 #define SEQUENCER_WEA_OFFSET 			8
 #define SEQUENCER_ADDR_OFFSET 			12
 #define SEQUENCER_DATA_OFFSET 			16
+#define SEQUENCER_STOP_SRC_OFFSET		20
 
 #define SEQUENCER_STOP					0
 #define SEQUENCER_START					1
+
+#define SEQUENCER_STOP_SRC_INTERNAL		0
+#define SEQUENCER_STOP_SRC_EXTERNAL		1
 
 #define SEQUENCER_MEMORY_SIZE			256
 #define END_OF_SEQUENCER_INSTRUCTION    2147483648
@@ -31,7 +35,8 @@ typedef struct {
 }seq_sw_status_t;
 
 typedef struct {
-	seq_sw_status_t start;
+	seq_sw_status_t stop;
+	seq_sw_status_t stop_src;
 }seq_sw_group_status_t;
 
 typedef struct {
