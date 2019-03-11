@@ -81,6 +81,24 @@ void io_sprintf(char *str, char *fmt, ...)
 			}
 			break;
 
+		case 'x':
+			if (find_dfs)
+			{
+				// Convert uint to string.
+				uint32_t n = (uint32_t)va_arg(argp,unsigned);
+				char ns[15];
+				io_uint2hex(n, ns);
+				strcat(outbuf,ns);
+				find_dfs = 0;
+				idx += strlen(ns);
+			}
+			else
+			{
+				outbuf[idx] = fmt[i];
+				idx++;
+			}
+			break;
+
 		case 'f':
 			if (find_dfs)
 			{
@@ -199,6 +217,40 @@ void io_uint2str(uint32_t n, char *str)
 	{
 		outbuf[i] = digits[(num % 10)];
 		num /= 10;
+		if (num == 0) break;
+	}
+
+	// Copy output buffer (backwards).
+	l = strlen(outbuf);
+	for (int i=0; i<l; i++)
+	{
+		str[i] = outbuf[l-i-1];
+	}
+	str[l] = '\0';
+}
+
+void io_uint2hex(uint32_t n, char *str)
+{
+	// Output buffer.
+	char outbuf[12];
+
+	for (int i=0; i<12; i++)
+	{
+		outbuf[i] = '\0';
+	}
+
+	uint32_t num = n;
+
+	// Digits.
+	const char digits[] = "0123456789ABCDEF";
+
+	// Do replacement for str length.
+	int l = sizeof(outbuf)/sizeof(char);
+	for (int i=0; i<l; i++)
+	{
+		uint8_t tmp = num & 0xF;
+		outbuf[i] = digits[tmp];
+		num /= 16;
 		if (num == 0) break;
 	}
 

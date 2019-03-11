@@ -6,14 +6,16 @@
 
 #include <stdio.h>
 #include <xgpio.h>
+#include <stdlib.h>
 #include "xparameters.h"
 #include "interrupt.h"
 #include "eth.h"
+#include "io_func.h"
 
 // XGpio device driver variables.
 XGpio gpio_eth_i;
 
-void eth_init(uint32_t gpio_device_id, eth_t *eth)
+int eth_init(uint32_t gpio_device_id, eth_t *eth)
 {
 	int ret;
 
@@ -27,13 +29,14 @@ void eth_init(uint32_t gpio_device_id, eth_t *eth)
 	XGpio_SetDataDirection(&gpio_eth_i, 1, 0x0);
 
 	// Initialize structure.
-	strcpy(eth->ip_low.name, "ipLow");
-	eth->ip_low.min = ETH_IP_LOW_MIN;
-	eth->ip_low.max = ETH_IP_LOW_MAX;
-	eth->ip_low.status = ETH_IP_LOW_DEFAULT;
+	strcpy(eth->ipEth.name, "ipEth");
+	eth->ipEth.min = ETH_IP_MIN;
+	eth->ipEth.max = ETH_IP_MAX;
+	eth->ipEth.val = ETH_IP_DEFAULT;
+	eth_uint2ip(eth->ipEth.val, eth->ipEth.valStr);
 
 	// Set value to hardware.
-	gpio_eth_change_state(&(eth->ip_low), eth->ip_low.status);
+	gpio_eth_change_state(&(eth->ipEth), eth->ipEth.val);
 
 	// Define void ptr to be able to point to any structure type.
 	void * ptr;
@@ -178,15 +181,96 @@ void eth_sdata_put( const char *str )
 	return;
 }
 
-int gpio_eth_change_state(eth_status_t *eth, uint8_t status)
+void eth_uint2ip(uint32_t ip, char *str)
 {
-	if (status >= eth->min && status <= eth->max)
+	char ip0[4];
+	char ip1[4];
+	char ip2[4];
+	char ip3[4];
+	uint32_t ip_tmp = ip;
+
+	io_uint2str((ip_tmp & 0xFF), ip0);
+	ip_tmp >>= 8;
+	io_uint2str((ip_tmp & 0xFF), ip1);
+	ip_tmp >>= 8;
+	io_uint2str((ip_tmp & 0xFF), ip2);
+	ip_tmp >>= 8;
+	io_uint2str((ip_tmp & 0xFF), ip3);
+
+	io_sprintf(str, "%s.%s.%s.%s", ip3, ip2, ip1, ip0);
+}
+
+uint32_t eth_ip2uint(char *str)
+{
+	uint32_t ip = 0;
+	eth_ip_words_t ipTerms[ETH_IP_TERMS];
+	char *token;
+	char *rest;
+
+	// Clear ipTerms array.
+	for (int i=0; i<ETH_IP_TERMS; i++)
+	{
+		for (int j=0; j<ETH_IP_TERM_LENGTH; j++)
+		{
+			ipTerms[i].word[j] = '\0';
+		}
+	}
+
+	rest = str;
+
+	// walk through other tokens
+	int wordInd = 0;
+	while( (token = strtok_r(rest, ".", &rest)) ) {
+		//save word
+		strcpy(ipTerms[wordInd].word,token);
+		wordInd = wordInd + 1;
+	}
+
+	free(token);
+	free(rest);
+
+	// Convert to number.
+	if (wordInd != 4)
+	{
+		return ip;
+	}
+	else
+	{
+		uint32_t tmp;
+		for (int i=0; i<wordInd; i++)
+		{
+			tmp = (uint32_t) (atoi(ipTerms[wordInd-i-1].word));
+			ip += (tmp << 8*i);
+		}
+	}
+
+	return ip;
+}
+
+int eth_change_ip(eth_status_t *eth, char *ip)
+{
+	// Convert string with ip to uint32_t.
+	uint32_t ip_u = eth_ip2uint(ip);
+
+	// Update values in register structure.
+	eth->val = ip_u;
+	eth_uint2ip(ip_u, eth->valStr);
+
+	// Upgrade value into hardware.
+	gpio_eth_change_state(eth, ip_u);
+
+	return 0;
+}
+
+int gpio_eth_change_state(eth_status_t *eth, uint32_t val)
+{
+	if (val >= eth->min && val <= eth->max)
 	{
 		// Update variable.
-		eth->status = status;
+		eth->val = val;
 
 		// Write gpio register.
-		XGpio_DiscreteWrite(&gpio_eth_i, 1, status);
+		XGpio_DiscreteWrite(&gpio_eth_i, 1, val);
 
 		return 0;
 	}

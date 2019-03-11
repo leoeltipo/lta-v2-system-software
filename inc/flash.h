@@ -73,7 +73,7 @@
 #define BYTE8						7 /* Byte 8 position */
 
 #define FLASH_BOARD_INFO_ADDR		0x3ffff00
-#define FLASH_BOARD_INFO_LENGTH		24
+#define FLASH_BOARD_INFO_LENGTH		40
 
 /*
  * Variable definitions.
@@ -98,6 +98,11 @@ typedef struct {
 } flash_date_t;
 
 typedef struct {
+	u8 hash[8];
+	char str[20];
+} flash_hash_t;
+
+typedef struct {
 	u32 val;
 } flash_id_t;
 
@@ -107,12 +112,14 @@ typedef struct {
 } flash_ip_t;
 
 typedef struct {
-	flash_fs_version_t firm_version;
-	flash_date_t firm_date;
-	flash_fs_version_t soft_version;
-	flash_date_t soft_date;
-	flash_id_t id;
-	flash_ip_t ip;
+	flash_fs_version_t	firm_version;
+	flash_date_t		firm_date;
+	flash_hash_t 		firm_hash;
+	flash_fs_version_t 	soft_version;
+	flash_date_t 		soft_date;
+	flash_hash_t 		soft_hash;
+	flash_id_t 		id;
+	flash_ip_t 		ip;
 	u32 addr;
 } flash_version_t;
 /*
@@ -136,7 +143,7 @@ int flash_write(u32 Addr, u32 ByteCount, u8 *data);
 
 int flash_readBoardInfo(flash_version_t *info);
 int flash_printBoardInfo(flash_version_t *info);
-uint8_t flash_getIpLow(flash_version_t *info);
+uint32_t flash_getIp(flash_version_t *info);
 
 int flash_eraseSubSector(u32 Addr);
 

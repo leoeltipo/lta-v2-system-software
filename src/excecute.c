@@ -451,13 +451,13 @@ int excecute_get(system_state_t *sys, const char *varID, char *errStr) {
 		if (flag_all)
 		{
 			// Print value.
-			io_sprintf(str, "%s = %d\r\n", eth_var->name, eth_var->status);
+			io_sprintf(str, "%s = %s\r\n", eth_var->name, eth_var->valStr);
 			mprint(str);
 		}
 		else if (strcmp(varID, eth_var->name)==0)
 		{
 			// Print value.
-			io_sprintf(str, "%s = %d\r\n", eth_var->name, eth_var->status);
+			io_sprintf(str, "%s = %s\r\n", eth_var->name, eth_var->valStr);
 			mprint(str);
 
 			return 0;
@@ -496,8 +496,9 @@ int excecute_get(system_state_t *sys, const char *varID, char *errStr) {
 	}
 	if (flag_all) mprint("\r\n");
 
-	// Sync Generation Logic.
-	if (flag_all) mprint("### Sync Generator ###\r\n");
+
+	// Sync Generation.
+	if (flag_all) mprint("### Sync Generation ###\r\n");
 	sync_gen_status_t *sync_gen_var = (sync_gen_status_t *) &(sys->sync_gen);
 	int nSyncGen = sizeof(sync_gen_t)/sizeof(sync_gen_status_t);
 	for(int i = 0; i < nSyncGen; i++)
@@ -880,7 +881,7 @@ int excecute_set(system_state_t *sys, char *varID, char *varVal, char *errStr) {
 	{
 		if (strcmp(varID, eth_var->name)==0)
 		{
-			status = gpio_eth_change_state(eth_var, (uint8_t) value);
+			status = eth_change_ip(eth_var, varVal);
 
 			if (status != 0)
 			{
@@ -892,14 +893,13 @@ int excecute_set(system_state_t *sys, char *varID, char *varVal, char *errStr) {
 		eth_var++;
 	}
 
-	// Sync Generation Logic.
+	// Sync Generation.
 	sync_gen_status_t *sync_gen_var = (sync_gen_status_t *) &(sys->sync_gen);
 	int nSyncGen = sizeof(sync_gen_t)/sizeof(sync_gen_status_t);
 	for(int i = 0; i < nSyncGen; i++)
 	{
 		if (strcmp(varID, sync_gen_var->name)==0)
 		{
-			// Change value.
 			status = sync_gen_change_status(sync_gen_var, (uint16_t) value);
 
 			if (status != 0)
