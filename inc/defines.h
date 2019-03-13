@@ -27,6 +27,21 @@
 #include "master_sel.h"
 #include "sync_gen.h"
 
+// Parser definitions.
+#define USERCOMMANDLENGTH 	100
+#define USERWORDLENTHG 		50
+#define USERNUMBWORDS 		5
+
+#define NO_WORD 	0
+#define ONE_WORD 	1
+#define TWO_WORD 	2
+#define THREE_WORDS 3
+#define FOUR_WORDS 	4
+
+typedef struct {
+	char word[USERWORDLENTHG];
+} user_words_t;
+
 // ASCII Characters.
 #define ASCII_CHAR_BS 	8	// Back space.
 #define ASCII_CHAR_CR 	13 	// Carriage return.

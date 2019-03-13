@@ -10,20 +10,6 @@
 
 #include "defines.h"
 
-#define USERCOMMANDLENGTH 100
-#define USERWORDLENTHG 50
-#define USERNUMBWORDS 5
-
-#define NO_WORD 0
-#define ONE_WORD 1
-#define TWO_WORD 2
-#define THREE_WORDS 3
-#define FOUR_WORDS 4
-
-typedef struct {
-	char word[USERWORDLENTHG];
-} user_words_t;
-
 int excecute_interpret(system_state_t *sys, char *userWord, char *errStr);
 void excecute_help(system_state_t *sys);
 int excecute_get(system_state_t *sys, const char *varID, char *errStr);

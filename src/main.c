@@ -38,6 +38,7 @@
 #include "excecute.h"
 #include "flash.h"
 #include "master_sel.h"
+#include "gpio_root.h"
 
 system_state_t sys;
 
@@ -54,22 +55,112 @@ int main ()
    int userWordInd = 0;
    char errStr[256];
 
-   // Init generic vars, eth driver, io_func (stdout control) and interrupts.
+   // Initialize uart.
+   uart_init(XPAR_UART_DEVICE_ID);
+
+   // Initialize generic vars.
    generic_vars_init(&(sys.generic_vars));
+
+   // Initialize ethernet and io.
    eth_init(XPAR_ETH_HIE_GPIO_ETH_DEVICE_ID,&(sys.eth));
    io_init(&sys);
+
+   // Initialize interrupts.
    intc_init(XPAR_INTC_0_DEVICE_ID);
+
+   // Initialize flash.
+   flash_init(XPAR_SPI_FLASH_DEVICE_ID, &(sys.flash));
+
+   // Check if root mode was switched on.
+   gpio_root_init(XPAR_GPIO_ROOT_DEVICE_ID);
+   if (gpio_root_sw())
+   {
+	   // Main loop.
+	   unsigned int cmdBufferIdx = 0;
+	   //uart_printMenu();
+
+	   // Erase buffers.
+	   uart_eraseBuffer(bufWords, USERCOMMANDLENGTH);
+	   uart_eraseBuffer(userWord, USERCOMMANDLENGTH);
+
+	   print("\033[2J");
+	   print("\033[H");
+	   print("Entering flash programming mode.\r\n");
+	   print("Enter password: ");
+
+	   while(1)
+	   {
+		   // Read char from serial port.
+		   int n = uart_rcv(bufWords);
+		   for (int i=0; i<n; i++)
+		   {
+			   // Enter was detected.
+			   if (bufWords[i] == ASCII_CHAR_CR)
+			   {
+				   print("\r\n");
+
+				   // Check password.
+				   if (gpio_root_get_waitPass())
+				   {
+					   gpio_root_check_pass((char *)userWord);
+				   }
+				   else
+				   {
+					   // Parse command.
+					   uart_parseCmd((char *)userWord);
+
+					   print("\r\n");
+				   }
+
+				   // Clean command buffer.
+				   uart_eraseBuffer(userWord, USERCOMMANDLENGTH);
+				   cmdBufferIdx = 0;
+			   }
+			   // Other chars were detected that delete the command buffer.
+			   else if (
+					   bufWords[i] == ASCII_CHAR_BS 	||
+					   bufWords[i] == ASCII_CHAR_CAN 	||
+					   bufWords[i] == ASCII_CHAR_EM 	||
+					   bufWords[i] == ASCII_CHAR_SUB 	||
+					   bufWords[i] == ASCII_CHAR_ESC 	||
+					   bufWords[i] == ASCII_CHAR_FS 	||
+					   bufWords[i] == ASCII_CHAR_DEL
+			   )
+			   {
+				   // Clean command buffer.
+				   uart_eraseBuffer(userWord, USERCOMMANDLENGTH);
+				   cmdBufferIdx = 0;
+
+				   print("\33[2K");
+				   print("\r\n");
+			   }
+			   else
+			   {
+				   //add character to the user vector
+				   userWord[cmdBufferIdx] = bufWords[i];
+				   cmdBufferIdx++;
+
+				   if (gpio_root_get_waitPass())
+				   {
+					   print("*");
+				   }
+				   else
+				   {
+					   print((const char*)&bufWords[i]);
+				   }
+			   }
+		   }
+	   }
+   }
+
+   // Configure board IP.
+   eth_change_ip(&(sys.eth.ipEth), sys.flash.ip.str);
+   tdelay_s(2);
 
    mprint("--- ################### ---\n\r");
    mprint("--- Initializing System ---\n\r");
    mprint("--- ################### ---\n\r");
    mprint("\r\n");
-
-   mprint("--- Initialize Uart ---\r\n");
-   uart_init(XPAR_UART_DEVICE_ID);
-
-   mprint("--- Initialize Flash ---\r\n");
-   flash_init(XPAR_SPI_FLASH_DEVICE_ID, &(sys.flash));
 
    mprint("--- Initialize Leds ---\r\n");
    gpio_leds_init(XPAR_LEDS_GPIO_DEVICE_ID, &(sys.leds));
@@ -141,11 +232,6 @@ int main ()
    mprint("\r\n");
    tdelay_s(2);
 
-   mprint("WARNING: Setting IP stored in flash.\r\n");
-   mprint("WARNING: Communication with board will be lost!!!\r\n");
-   eth_change_ip(&(sys.eth.ipEth), sys.flash.ip.str);
-   tdelay_s(2);
-
    // Blink led to indicate end of initialization.
    for (int i=0; i<10; i++)
    {
@@ -160,15 +246,9 @@ int main ()
    /* **************** MAIN LOOP ******************* */
    /* ********************************************** */
    mprint("Accepting comands...\r\n");
-   // Initialize buffers.
-   for	(int u = 0; u<USERCOMMANDLENGTH; u = u +1)
-   {
-	   bufWords[u] = 0;
-   }
-   for	(int u = 0; u<USERCOMMANDLENGTH; u = u +1)
-   {
-	   userWord[u] = 0;
-   }
+   // Erase buffers.
+   uart_eraseBuffer(bufWords, USERCOMMANDLENGTH);
+   uart_eraseBuffer(userWord, USERCOMMANDLENGTH);
 
    while (1)
    {

@@ -20,6 +20,7 @@
 
 #define ETH_IP_TERM_LENGTH	6
 #define ETH_IP_TERMS		6
+#define ETH_IP_STR_LENGTH	20
 
 typedef struct {
 	char word[ETH_IP_TERM_LENGTH];
@@ -31,7 +32,7 @@ typedef struct {
 	uint32_t min;
 	uint32_t max;
 	char name[10];
-	char valStr[20];
+	char valStr[ETH_IP_STR_LENGTH];
 } eth_status_t;
 
 typedef struct {

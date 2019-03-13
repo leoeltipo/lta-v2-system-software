@@ -202,10 +202,14 @@ void eth_uint2ip(uint32_t ip, char *str)
 
 uint32_t eth_ip2uint(char *str)
 {
+	char str_tmp[ETH_IP_STR_LENGTH];
 	uint32_t ip = 0;
 	eth_ip_words_t ipTerms[ETH_IP_TERMS];
 	char *token;
 	char *rest;
+
+	// Copy string to avoid modifying it.
+	strcpy(str_tmp,str);
 
 	// Clear ipTerms array.
 	for (int i=0; i<ETH_IP_TERMS; i++)
@@ -216,7 +220,7 @@ uint32_t eth_ip2uint(char *str)
 		}
 	}
 
-	rest = str;
+	rest = str_tmp;
 
 	// walk through other tokens
 	int wordInd = 0;
