@@ -367,6 +367,32 @@ void io_float2str(float n, char *str)
 	str[l] = '\0';
 }
 
+void io_padd(uint8_t n, char *str, char ch)
+{
+	uint8_t l = strlen(str);
+	uint8_t p = n-l;
+
+	char pad_str[64];
+	for (int i=0; i<64; i++)
+	{
+		pad_str[i] = '\0';
+	}
+
+	if (p > 0)
+	{
+		for (int i=0; i<p; i++)
+		{
+			pad_str[i] = ch;
+		}
+	}
+
+	// Concatenate strings.
+	strcat(pad_str, str);
+
+	// Copy result back to str.
+	strcpy(str, pad_str);
+}
+
 void mprint(const char *str)
 {
 	if (io_sys->generic_vars.outeth.value)

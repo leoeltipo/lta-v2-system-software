@@ -618,6 +618,9 @@ int flash_readBoardInfo(flash_version_t *info)
 	io_sprintf( str, "%x%x",
 				tmp1,
 				tmp2);
+
+	// Zero padding in case hash starts with 0 digits.
+	io_padd(16, str, '0');
 	strcpy(info->firm_hash.str, str);
 
 	// Software version.

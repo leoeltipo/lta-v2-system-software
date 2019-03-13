@@ -24,6 +24,7 @@ void io_int2str(int32_t n, char *str);
 void io_uint2str(uint32_t n, char *str);
 void io_uint2hex(uint32_t n, char *str);
 void io_float2str(float n, char *str);
+void io_padd(uint8_t n, char *str, char ch);
 
 void mprint(const char *str);
 
