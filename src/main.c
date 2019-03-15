@@ -323,6 +323,10 @@ int main ()
 	   // Check if sequencer has finished.
 	   if (sequencer_eos(&(sys.seq)))
 	   {
+		   // Stop Sync Gen.
+		   sync_gen_change_status(&(sys.sync_gen.stop), SYNC_GEN_STOP);
+
+		   // Stop packer.
 		   packer_change_sw_status(&(sys.packer_sw.start),PACKER_START_OFF);
 		   mprint("Read done\r\n");
 	   }
