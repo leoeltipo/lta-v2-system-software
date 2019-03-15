@@ -160,10 +160,9 @@ int sequencer_eos(seq_t *seq)
 	// Check if the sequence has finished.
 	if(end)
 	{
-		// If it finished, stop the sequencer.
-		SEQUENCER_mWriteReg(XPAR_SEQUENCER_HIE_SEQUENCER_BASEADDR,SEQUENCER_STOP_SEQUENCE_OFFSET, 0x0);
-		//move sequencer start switch to 0
-		seq_change_sw_status(&(seq->sw_group.stop), 0);
+		// If it finished, set stop source back to internal and stop the sequencer.
+		seq_change_sw_status(&(seq->sw_group.stop_src), SEQUENCER_STOP_SRC_INTERNAL);
+		seq_change_sw_status(&(seq->sw_group.stop), SEQUENCER_STOP);
 		return 1;
 	}
 	else
