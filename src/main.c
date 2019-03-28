@@ -168,6 +168,9 @@ int main ()
    mprint("--- Initialize Master Selection Logic ---\r\n");
    master_sel_init(&(sys.master_sel));
 
+   mprint("--- Initialize Frequency Measurement ---\r\n");
+   fr_meas_init(&(sys.fr_meas));
+
    mprint("--- Initialize Sync Generation Logic ---\r\n");
    sync_gen_init(&(sys.sync_gen));
 

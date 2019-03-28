@@ -168,7 +168,7 @@ int telemetry_init(telemetry_group_t *sources, uint32_t spi_device_id, uint32_t 
 	sources->v2c.mux_en = TELEMETRY_MUX_EN0;
 	sources->v2c.mux_ch = TELEMETRY_MUX_CH3;
 	sources->v2c.ad_ch = TELEMETRY_AD_CH1;
-	sources->v2c.gain = 1;
+	sources->v2c.gain = 2;
 
 	strcpy(sources->h3a.name,"h3a");
 	strcpy(sources->h3a.description,"H3A Clock");
@@ -189,28 +189,28 @@ int telemetry_init(telemetry_group_t *sources, uint32_t spi_device_id, uint32_t 
 	sources->v1a.mux_en = TELEMETRY_MUX_EN0;
 	sources->v1a.mux_ch = TELEMETRY_MUX_CH6;
 	sources->v1a.ad_ch = TELEMETRY_AD_CH1;
-	sources->v1a.gain = 1;
+	sources->v1a.gain = 2;
 
 	strcpy(sources->v1b.name,"v1b");
 	strcpy(sources->v1b.description,"V1B Clock");
 	sources->v1b.mux_en = TELEMETRY_MUX_EN0;
 	sources->v1b.mux_ch = TELEMETRY_MUX_CH7;
 	sources->v1b.ad_ch = TELEMETRY_AD_CH1;
-	sources->v1b.gain = 1;
+	sources->v1b.gain = 2;
 
 	strcpy(sources->v3a.name,"v3a");
 	strcpy(sources->v3a.description,"V3A Clock");
 	sources->v3a.mux_en = TELEMETRY_MUX_EN1;
 	sources->v3a.mux_ch = TELEMETRY_MUX_CH0;
 	sources->v3a.ad_ch = TELEMETRY_AD_CH2;
-	sources->v3a.gain = 1;
+	sources->v3a.gain = 2;
 
 	strcpy(sources->v3b.name,"v3b");
 	strcpy(sources->v3b.description,"V3B Clock");
 	sources->v3b.mux_en = TELEMETRY_MUX_EN1;
 	sources->v3b.mux_ch = TELEMETRY_MUX_CH1;
 	sources->v3b.ad_ch = TELEMETRY_AD_CH2;
-	sources->v3b.gain = 1;
+	sources->v3b.gain = 2;
 
 	strcpy(sources->tga.name,"tga");
 	strcpy(sources->tga.description,"TGA Offset");

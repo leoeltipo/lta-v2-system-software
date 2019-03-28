@@ -26,6 +26,7 @@
 #include "flash.h"
 #include "master_sel.h"
 #include "sync_gen.h"
+#include "fr_meas.h"
 
 // Parser definitions.
 #define USERCOMMANDLENGTH 	100
@@ -72,6 +73,7 @@ typedef struct {
 	flash_version_t				flash;
 	master_sel_t				master_sel;
 	sync_gen_t					sync_gen;
+	fr_meas_t					fr_meas;
 } system_state_t;
 
 

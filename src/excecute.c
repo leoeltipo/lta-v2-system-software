@@ -521,6 +521,37 @@ int excecute_get(system_state_t *sys, const char *varID, char *errStr) {
 	}
 	if (flag_all) mprint("\r\n");
 
+
+	// Frequency Measurement.
+	if (flag_all) mprint("### Frequency Measurement ###\r\n");
+	fr_meas_status_t *fr_meas_var = (fr_meas_status_t *) &(sys->fr_meas);
+	int nFrMeas = sizeof(fr_meas_t)/sizeof(fr_meas_status_t);
+	for(int i = 0; i < nFrMeas; i++)
+	{
+		if (flag_all)
+		{
+			// Update value from hadrware.
+			fr_meas_update_reg(fr_meas_var);
+
+			// Print value.
+			io_sprintf(str, "%s = %d kHz\r\n", fr_meas_var->name, fr_meas_var->value);
+			mprint(str);
+		}
+		else if (strcmp(varID, fr_meas_var->name)==0)
+		{
+			// Update value from hadrware.
+			fr_meas_update_reg(fr_meas_var);
+
+			// Print value.
+			io_sprintf(str, "%s = %d kHz\r\n", fr_meas_var->name, fr_meas_var->value);
+			mprint(str);
+
+			return 0;
+		}
+		fr_meas_var++;
+	}
+	if (flag_all) mprint("\r\n");
+
 	// Get sequencer in RAM.
 	if (strcmp(varID,"seq")==0)
 	{
